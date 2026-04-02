@@ -1,0 +1,241 @@
+/* Admin shell */
+.shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg, #f8fafc);
+}
+
+.sidebar {
+  width: 220px;
+  min-height: 100vh;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 24px 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brand {
+  padding: 0 20px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 12px;
+}
+
+.brandTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.35;
+}
+
+.brandSub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.navLink {
+  display: block;
+  padding: 10px 20px;
+  font-size: 14px;
+  color: #94a3b8;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.navLink:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navLinkActive {
+  color: #fff;
+  background: rgba(20, 184, 166, 0.15);
+  border-right: 3px solid #14b8a6;
+}
+
+.main {
+  margin-left: 220px;
+  flex: 1;
+  padding: 32px 40px;
+  max-width: calc(100vw - 220px);
+}
+
+.pageTitle {
+  font-size: 28px;
+  color: #0f172a;
+  margin: 0 0 8px;
+  font-family: 'DM Serif Display', serif;
+}
+
+.pageDesc {
+  color: #64748b;
+  font-size: 15px;
+  margin: 0 0 28px;
+}
+
+.card {
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.statCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.statValue {
+  font-size: 28px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.statLabel {
+  font-size: 13px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.table th {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 2px solid #e2e8f0;
+  color: #64748b;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table td {
+  padding: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+  vertical-align: middle;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusPending {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.statusConfirmed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.statusCompleted {
+  background: #d1fae5;
+  color: #047857;
+}
+
+.statusCancelled {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btnComplete {
+  background: #059669;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btnComplete:hover {
+  background: #047857;
+}
+
+.btnComplete:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btnCancel {
+  background: #fff;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btnCancel:hover {
+  background: #fef2f2;
+}
+
+.btnCancel:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.empty {
+  color: #64748b;
+  font-size: 15px;
+  padding: 24px;
+  text-align: center;
+}
+
+.loading {
+  color: #64748b;
+  padding: 24px;
+}
+
+.topBar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.linkHome {
+  font-size: 14px;
+  color: #64748b;
+  text-decoration: none;
+}
+
+.linkHome:hover {
+  color: #14b8a6;
+}

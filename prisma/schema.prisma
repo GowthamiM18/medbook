@@ -1,0 +1,79 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  phone        String         @default("")
+  password     String
+  role         Role          @default(PATIENT)
+  createdAt    DateTime      @default(now())
+  appointments Appointment[] @relation("PatientAppointments")
+  doctor       Doctor?
+}
+
+model Doctor {
+  id           String        @id @default(cuid())
+  userId       String        @unique
+  user         User          @relation(fields: [userId], references: [id])
+  specialty    String
+  bio          String
+  experience   Int
+  rating       Float         @default(4.5)
+  photoUrl     String?
+  location     String
+  fee          Float
+  timeSlots    TimeSlot[]
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+}
+
+model TimeSlot {
+  id          String       @id @default(cuid())
+  doctorId    String
+  doctor      Doctor       @relation(fields: [doctorId], references: [id])
+  date        String
+  startTime   String
+  endTime     String
+  isBooked    Boolean      @default(false)
+  appointment Appointment?
+  createdAt   DateTime     @default(now())
+}
+
+model Appointment {
+  id            String            @id @default(cuid())
+  patientId     String
+  patient       User              @relation("PatientAppointments", fields: [patientId], references: [id])
+  doctorId      String
+  doctor        Doctor            @relation(fields: [doctorId], references: [id])
+  slotId        String            @unique
+  slot          TimeSlot          @relation(fields: [slotId], references: [id])
+  symptoms      String
+  /** Snapshot of patient contact at booking time (10 digits). */
+  patientPhone  String            @default("")
+  tokenNumber   String            @default("")
+  status        AppointmentStatus @default(PENDING)
+  notes         String?
+  createdAt     DateTime          @default(now())
+}
+
+enum Role {
+  PATIENT
+  DOCTOR
+  ADMIN
+}
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
