@@ -1,0 +1,13 @@
+{
+  "/page": "app/page.js",
+  "/doctors/page": "app/doctors/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/book/page": "app/book/page.js",
+  "/login/page": "app/login/page.js",
+  "/api/appointments/route": "app/api/appointments/route.js",
+  "/api/doctors/route": "app/api/doctors/route.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/admin/login/page": "app/admin/login/page.js",
+  "/admin/(dashboard)/overview/page": "app/admin/(dashboard)/overview/page.js",
+  "/admin/(dashboard)/appointments/page": "app/admin/(dashboard)/appointments/page.js"
+}

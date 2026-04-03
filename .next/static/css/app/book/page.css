@@ -1,0 +1,527 @@
+/*!************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[7].use[3]!./src/app/book/book.module.css ***!
+  \************************************************************************************************************************************************************************************************************************************************************************/
+/* src/app/book/book.module.css */
+.book_page__fDrIQ { min-height: 100vh; background: var(--bg); }
+.book_nav__otYtX {
+  background: white; border-bottom: 1px solid var(--border);
+  padding: 0 40px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.book_logo__njii5 {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-brand-nav);
+  font-size: clamp(1rem, 2.2vw, var(--brand-nav-size));
+  font-weight: var(--brand-nav-weight);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--navy); text-decoration: none;
+  min-width: 0; max-width: min(560px, 55vw);
+}
+.book_logoDot__2BuG2 {
+  width: var(--brand-nav-dot);
+  height: var(--brand-nav-dot);
+  border-radius: 50%;
+  background: var(--teal);
+  flex-shrink: 0;
+}
+.book_navLink___YjBP { font-size: 14px; color: var(--slate); text-decoration: none; }
+.book_navLink___YjBP:hover { color: var(--teal); }
+
+.book_container__ZTrTY { max-width: 720px; margin: 0 auto; padding: 40px 24px; }
+
+/* Progress */
+.book_progress__8QU_v { display: flex; align-items: center; margin-bottom: 48px; }
+.book_progressItem__pJv25 { display: flex; align-items: center; gap: 8px; }
+.book_progressDot__xbGSa {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; background: var(--border); color: var(--slate);
+  transition: all 0.3s;
+}
+.book_active__BK3F2 { background: var(--teal); color: white; }
+.book_done__xIoGv { background: var(--teal-dark); color: white; }
+.book_progressLabel__FmJY_ { font-size: 13px; color: var(--slate); white-space: nowrap; }
+.book_progressLabelActive__Tvwtv { font-size: 13px; color: var(--teal); font-weight: 600; }
+.book_progressLine__59DrR { flex: 1 1; height: 1px; background: var(--border); width: 40px; margin: 0 8px; }
+.book_lineDone__fR7qq { background: var(--teal); }
+
+/* Steps */
+.book_step___Ih5X { animation: book_fadeIn__UTW89 0.3s ease; }
+.book_step___Ih5X h2 { font-size: 26px; color: var(--navy); margin-bottom: 24px; }
+
+.book_emptyDoctors__hXDF8 {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: var(--slate);
+  line-height: 1.55;
+}
+.book_emptyDoctors__hXDF8 p:first-child {
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.book_emptyDoctors__hXDF8 code {
+  font-size: 13px;
+  background: #e2e8f0;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.book_emptyDoctorsSub__w4WZ6 {
+  margin-top: 12px;
+  font-size: 13px;
+  opacity: 0.95;
+}
+
+/* Doctor grid */
+.book_doctorGrid__RDGhd { display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px; }
+.book_doctorCard__MKwRy {
+  display: flex; align-items: center; gap: 14px;
+  background: white; border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 16px 20px; cursor: pointer; text-align: left; width: 100%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.book_doctorCard__MKwRy:hover { border-color: var(--teal); }
+.book_doctorSelected__PdhY0 { border-color: var(--teal); background: var(--teal-50); box-shadow: 0 0 0 3px rgba(13,148,136,0.1); }
+.book_docAvatar__WUw1P {
+  width: 44px; height: 44px; border-radius: 50%; flex-shrink: 0;
+  background: var(--teal-light); color: var(--teal-dark);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; font-weight: 700;
+}
+.book_docInfo__g_ZDE { display: flex; flex-direction: column; gap: 2px; }
+.book_docInfo__g_ZDE strong { font-size: 15px; color: var(--navy); }
+.book_docInfo__g_ZDE span { font-size: 13px; color: var(--slate); }
+
+/* Date grid */
+.book_dateGrid__93hdH { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.book_dateBtn___Zivv {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  background: white; border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 12px 16px; cursor: pointer; transition: all 0.2s; min-width: 70px;
+}
+.book_dateBtn___Zivv:hover { border-color: var(--teal); }
+.book_dateBtn___Zivv span { font-size: 11px; color: var(--slate); text-transform: uppercase; }
+.book_dateBtn___Zivv strong { font-size: 14px; color: var(--navy); }
+.book_dateBtnActive___G5N0 { border-color: var(--teal); background: var(--teal-50); }
+.book_dateBtnActive___G5N0 strong { color: var(--teal); }
+
+/* Slot grid */
+.book_slotGrid__JeyC2 { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.book_slot__brKkC {
+  padding: 9px 16px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: white; color: var(--navy); font-size: 14px; cursor: pointer;
+  transition: all 0.2s;
+}
+.book_slot__brKkC:hover { border-color: var(--teal); }
+.book_slotActive__4UrGP { border-color: var(--teal); background: var(--teal); color: white; }
+
+/* Summary */
+.book_summary__hzxou {
+  background: white; border: 1px solid var(--border); border-radius: 14px;
+  padding: 24px; margin-bottom: 24px;
+}
+.book_summaryRow__deFqe {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.book_summaryRow__deFqe:last-child { border-bottom: none; }
+.book_summaryRow__deFqe span { color: var(--slate); }
+.book_summaryRow__deFqe strong { color: var(--navy); }
+
+/* Symptoms */
+.book_symptomsSection__E_wPn { margin-bottom: 28px; }
+.book_symptomsSection__E_wPn label { display: block; font-size: 14px; font-weight: 500; color: var(--navy); margin-bottom: 8px; }
+.book_symptomsInput__rjvgv {
+  width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px;
+  font-size: 14px; color: var(--navy); resize: vertical; outline: none;
+  transition: border-color 0.2s; font-family: inherit; line-height: 1.6;
+}
+.book_symptomsInput__rjvgv:focus { border-color: var(--teal); }
+
+/* Buttons */
+.book_stepNav__lvyHn { display: flex; gap: 12px; }
+.book_backBtn__kgSyf {
+  padding: 12px 24px; border: 1.5px solid var(--border); background: white;
+  border-radius: 8px; font-size: 15px; color: var(--slate); cursor: pointer;
+  transition: background 0.2s;
+}
+.book_backBtn__kgSyf:hover { background: var(--bg); }
+.book_nextBtn__vBxu9 {
+  padding: 12px 28px; background: var(--teal); color: white;
+  border: none; border-radius: 8px; font-size: 15px; font-weight: 500;
+  cursor: pointer; transition: background 0.2s; flex: 1 1;
+}
+.book_nextBtn__vBxu9:hover:not(:disabled) { background: var(--teal-dark); }
+.book_nextBtn__vBxu9:disabled { opacity: 0.5; cursor: not-allowed; }
+.book_confirmBtn__LSjy8 {
+  padding: 12px 28px; background: var(--teal); color: white;
+  border: none; border-radius: 8px; font-size: 15px; font-weight: 500;
+  cursor: pointer; transition: background 0.2s; flex: 1 1;
+}
+.book_confirmBtn__LSjy8:hover:not(:disabled) { background: var(--teal-dark); }
+.book_confirmBtn__LSjy8:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Success */
+.book_successPage__aauT4 {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #f0fdfa, #e0f2fe);
+}
+.book_successCard__KXKNE {
+  background: white; border-radius: 20px; padding: 48px 40px;
+  text-align: center; max-width: 420px; width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+  animation: book_fadeIn__UTW89 0.4s ease;
+}
+.book_successIcon__Ny_1F {
+  width: 64px; height: 64px; border-radius: 50%; background: #dcfce7;
+  color: #16a34a; font-size: 28px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+}
+.book_successCard__KXKNE h2 { font-size: 26px; color: var(--navy); margin-bottom: 12px; }
+.book_successCard__KXKNE p { color: var(--slate); font-size: 15px; line-height: 1.7; margin-bottom: 20px; }
+
+.book_tokenBox__QC5wy {
+  background: linear-gradient(135deg, #f0fdfa 0%, #ecfeff 100%);
+  border: 2px dashed var(--teal);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+  text-align: center;
+}
+.book_tokenLabel__BYI8L {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--teal-dark);
+  margin-bottom: 8px;
+}
+.book_tokenValue__R24jL {
+  display: block;
+  font-family: ui-monospace, monospace;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--navy);
+  letter-spacing: 0.12em;
+}
+.book_tokenHint__FIvDq {
+  display: block;
+  font-size: 13px;
+  color: var(--slate);
+  margin-top: 10px;
+  line-height: 1.4;
+}
+.book_btnPrimary__vcGY0 {
+  display: inline-block; background: var(--teal); color: white;
+  padding: 13px 28px; border-radius: 8px; font-size: 15px; font-weight: 500;
+  text-decoration: none; transition: background 0.2s;
+}
+.book_btnPrimary__vcGY0:hover { background: var(--teal-dark); }
+
+/*!**********************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[7].use[3]!./src/components/SlotCalendar.module.css ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************/
+/* SlotCalendar — Udumula Hospital booking; teal theme #2D9E8A, white surface */
+.SlotCalendar_wrap__NqtCb {
+  /* Root container: full width, white card feel */
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.SlotCalendar_title__sRLZm {
+  /* Doctor line above the calendar */
+  font-family: 'DM Serif Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: #0f172a;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+/* Month navigation row */
+.SlotCalendar_navRow__K845r {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.SlotCalendar_navBtn__ruOJa {
+  /* Previous / next month arrows */
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  color: #2d9e8a;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.SlotCalendar_navBtn__ruOJa:hover:not(:disabled) {
+  background: #f0fdfa;
+  border-color: #2d9e8a;
+}
+
+.SlotCalendar_navBtn__ruOJa:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.SlotCalendar_monthLabel__ViP7D {
+  /* Centered month + year */
+  flex: 1 1;
+  text-align: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0f172a;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Weekday headers */
+.SlotCalendar_weekdays__61VSn {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 4px;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.SlotCalendar_weekday__mc6zO {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748b;
+  padding: 4px 0;
+}
+
+/* Calendar body: 7 columns */
+.SlotCalendar_grid__ljzGZ {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 6px;
+  gap: 6px;
+}
+
+.SlotCalendar_cell__kx2EH {
+  /* One day cell */
+  aspect-ratio: 1;
+  max-height: 52px;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+  position: relative;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.SlotCalendar_cell__kx2EH:hover:not(:disabled):not(.SlotCalendar_past__oWZnG):not(.SlotCalendar_empty__LcHe3) {
+  background: #f0fdfa;
+}
+
+.SlotCalendar_cell__kx2EH.SlotCalendar_past__oWZnG {
+  /* Before today: not interactive */
+  color: #cbd5e1;
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+
+.SlotCalendar_cell__kx2EH.SlotCalendar_empty__LcHe3 {
+  /* Padding cell outside current month */
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.SlotCalendar_cell__kx2EH.SlotCalendar_today__UIKuq {
+  /* Blue border for current day */
+  border-color: #2563eb;
+}
+
+.SlotCalendar_cell__kx2EH.SlotCalendar_selected__8cxOf:not(.SlotCalendar_past__oWZnG) {
+  /* Filled selection */
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+}
+
+.SlotCalendar_cell__kx2EH.SlotCalendar_selected__8cxOf.SlotCalendar_today__UIKuq:not(.SlotCalendar_past__oWZnG) {
+  /* Selected + today: keep blue fill */
+  border-color: #1d4ed8;
+}
+
+.SlotCalendar_dots__V8oWv {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: center;
+  min-height: 6px;
+}
+
+.SlotCalendar_dot__bev5S {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.SlotCalendar_dotGreen___Wx0e {
+  background: #22c55e;
+}
+
+.SlotCalendar_dotRed__usldB {
+  background: #ef4444;
+}
+
+.SlotCalendar_cell__kx2EH.SlotCalendar_selected__8cxOf .SlotCalendar_dotGreen___Wx0e,
+.SlotCalendar_cell__kx2EH.SlotCalendar_selected__8cxOf .SlotCalendar_dotRed__usldB {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6);
+}
+
+/* Slot panel below calendar */
+.SlotCalendar_slotPanel__UhQcP {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.SlotCalendar_slotPanelTitle__Rr9dt {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 12px;
+}
+
+.SlotCalendar_slotGrid__Mjdkz {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  grid-gap: 8px;
+  gap: 8px;
+}
+
+.SlotCalendar_slotBtn__A1Wr2 {
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  color: #0f172a;
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.SlotCalendar_slotBtn__A1Wr2.SlotCalendar_available__VasuE {
+  border-color: #22c55e;
+  background: #ffffff;
+}
+
+.SlotCalendar_slotBtn__A1Wr2.SlotCalendar_available__VasuE:hover {
+  border-color: #2d9e8a;
+  background: #f0fdfa;
+}
+
+.SlotCalendar_slotBtn__A1Wr2.SlotCalendar_booked__rozfR {
+  background: #e2e8f0;
+  color: #94a3b8;
+  text-decoration: line-through;
+  cursor: not-allowed;
+  border-color: #cbd5e1;
+}
+
+.SlotCalendar_slotBtn__A1Wr2.SlotCalendar_missing__JWLDp {
+  /* No slot in schedule for this time */
+  background: #f8fafc;
+  color: #cbd5e1;
+  border-color: #e2e8f0;
+  cursor: not-allowed;
+  font-size: 12px;
+}
+
+.SlotCalendar_slotBtn__A1Wr2.SlotCalendar_selected__8cxOf {
+  background: #2d9e8a;
+  border-color: #2d9e8a;
+  color: #ffffff;
+}
+
+.SlotCalendar_slotBtn__A1Wr2.SlotCalendar_selected__8cxOf:hover {
+  background: #268f7d;
+}
+
+/* Bottom actions */
+.SlotCalendar_actions__4_Mwr {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 8px;
+}
+
+.SlotCalendar_backBtn__eVufw {
+  padding: 12px 24px;
+  border: 1.5px solid #e2e8f0;
+  background: #ffffff;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #64748b;
+  transition: background 0.2s;
+}
+
+.SlotCalendar_backBtn__eVufw:hover {
+  background: #f8fafc;
+}
+
+.SlotCalendar_continueBtn__fPpon {
+  flex: 1 1;
+  padding: 12px 28px;
+  background: #2d9e8a;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.SlotCalendar_continueBtn__fPpon:hover:not(:disabled) {
+  background: #248a78;
+}
+
+.SlotCalendar_continueBtn__fPpon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.SlotCalendar_placeholder__JlCJC {
+  font-size: 14px;
+  color: #94a3b8;
+  text-align: center;
+  padding: 16px 0;
+}
+
