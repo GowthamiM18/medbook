@@ -3,10 +3,14 @@
  * Extract create_appointment args and strip markup from user-visible text.
  */
 
+function looksLikeCreateAppointmentArgs(o: Record<string, unknown>): boolean {
+  return typeof o.doctor_name === 'string' || typeof o.doctor_id === 'string'
+}
+
 function tryParseJsonObject(s: string): Record<string, unknown> | null {
   try {
     const o = JSON.parse(s) as Record<string, unknown>
-    if (o && typeof o.doctor_name === 'string') return o
+    if (o && looksLikeCreateAppointmentArgs(o)) return o
   } catch {
     /* ignore */
   }
@@ -55,7 +59,7 @@ export function extractCreateAppointmentPayload(text: string): {
     }
   }
 
-  if (!args && /"doctor_name"\s*:/.test(raw)) {
+  if (!args && (/"doctor_name"\s*:/.test(raw) || /"doctor_id"\s*:/.test(raw))) {
     const brace = raw.indexOf('{')
     if (brace >= 0) {
       args = parseBalancedJson(raw, brace)

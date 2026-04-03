@@ -2,12 +2,14 @@
  * Server-side booking for AI tool create_appointment (matches /api/appointments POST rules).
  */
 import { format, isValid, parseISO } from 'date-fns'
+import type { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { generateUniqueAppointmentToken } from '@/lib/appointment-token'
 import { normalizePhone10 } from '@/lib/phone'
 
 export type CreateAppointmentArgs = {
-  doctor_name: string
+  doctor_id?: string
+  doctor_name?: string
   date: string
   time: string
   reason: string
@@ -91,15 +93,17 @@ export async function executeCreateAppointment(
     }
   }
 
+  const doctor_id = String(raw.doctor_id ?? '').trim()
   const doctor_name = String(raw.doctor_name ?? '').trim()
   const dateRaw = String(raw.date ?? '').trim()
   const timeRaw = String(raw.time ?? '').trim()
   const reason = String(raw.reason ?? '').trim()
 
-  if (!doctor_name || !dateRaw || !timeRaw || !reason) {
+  if ((!doctor_id && !doctor_name) || !dateRaw || !timeRaw || !reason) {
     return {
       ok: false,
-      error: 'Missing doctor_name, date, time, or reason. Ask the user for the missing field.',
+      error:
+        'Missing booking fields. Need doctor_id (from the roster) or doctor_name, plus date, time, and reason.',
     }
   }
 
@@ -120,21 +124,43 @@ export async function executeCreateAppointment(
     }
   }
 
-  const doctors = await prisma.doctor.findMany({
-    include: { user: true },
-  })
+  let doctor: (Prisma.DoctorGetPayload<{ include: { user: true } }>) | null = null
 
-  const target = normName(doctor_name)
-  const doctor = doctors.find((d) => {
-    const n = normName(d.user.name)
-    return n.includes(target) || target.includes(n) || normName(doctor_name) === n
-  })
+  if (doctor_id) {
+    doctor = await prisma.doctor.findUnique({
+      where: { id: doctor_id },
+      include: { user: true },
+    })
+    if (!doctor) {
+      return {
+        ok: false,
+        error: `doctor_id "${doctor_id}" is not in our system. Use only doctor_id values from the live roster — do not invent IDs.`,
+      }
+    }
+  }
+
+  if (!doctor && doctor_name) {
+    const doctors = await prisma.doctor.findMany({
+      include: { user: true },
+    })
+    const target = normName(doctor_name)
+    doctor =
+      doctors.find((d) => {
+        const n = normName(d.user.name)
+        return n.includes(target) || target.includes(n) || normName(doctor_name) === n
+      }) ?? null
+  }
 
   if (!doctor) {
-    const names = doctors.map((d) => d.user.name).slice(0, 12)
+    const doctors = await prisma.doctor.findMany({
+      include: { user: true },
+    })
+    const names = doctors.map((d) => `${d.user.name} (id: ${d.id})`).slice(0, 16)
     return {
       ok: false,
-      error: `No doctor matched "${doctor_name}". Available examples: ${names.join('; ')}. Ask the user to pick an exact name from Find Doctors.`,
+      error: names.length
+        ? `No doctor matched that request. Registered doctors: ${names.join('; ')}. Ask the user to pick from this list only.`
+        : 'No doctors are registered yet. Cannot complete booking.',
     }
   }
 

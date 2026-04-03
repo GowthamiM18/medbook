@@ -5,6 +5,7 @@ import OpenAI from 'openai'
 import type { ChatTurn } from '@/lib/gemini-stream-chat'
 import { executeCreateAppointment } from '@/lib/ai-create-appointment'
 import { extractCreateAppointmentPayload } from '@/lib/ai-parse-pseudo-tool'
+import { formatDoctorRosterForPrompt, type DoctorRosterEntry } from '@/lib/doctor-roster-prompt'
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { SYSTEM_PROMPT } = require('./anthropic-chat-shared.js') as { SYSTEM_PROMPT: string }
@@ -12,36 +13,48 @@ const { SYSTEM_PROMPT } = require('./anthropic-chat-shared.js') as { SYSTEM_PROM
 const GROQ_BASE_URL = 'https://api.groq.com/openai/v1'
 
 const BOOKING_TOOLS_INSTRUCTION = `
-You may call create_appointment only when the user clearly wants to book an appointment AND you have all of:
-- doctor_name: exact or close match to a doctor at Udumula Hospital (use full name with Dr. prefix if known)
+You may call create_appointment only when the user clearly wants to book AND you have:
+- doctor_id: REQUIRED — copy the exact id string from the roster block above (never invent or guess an id).
+- doctor_name: optional but recommended — the exact display name from the same roster line (helps confirmations).
 - date: YYYY-MM-DD (use the current calendar year for upcoming dates)
 - time: 24-hour HH:mm (e.g. 10:30, 14:00)
 - reason: symptoms or visit reason (maps to appointment notes)
 
-If any field is missing or unclear, ask one short question — do not guess dates/times/doctors.
+When listing or suggesting doctors, use ONLY names and specialties from the roster. Never make up doctors (e.g. do not invent "Dr. Robert Kim" or similar if they are not listed).
+
+If any field is missing or unclear, ask one short question — do not guess dates, times, or doctor_id.
 After a successful booking (tool returns ok: true), confirm in plain language: doctor, date, time, and queue token.
 If the tool returns ok: false, explain simply and help the user fix it (e.g. pick a listed time, sign in, update phone on profile).
 
 Never write XML, HTML, code fences, or <function...> tags in your reply. Never paste raw JSON or fake "tool call" text — the platform runs tools for you. Speak only in normal sentences.
 `
 
-const CREATE_APPOINTMENT_TOOL: OpenAI.Chat.ChatCompletionTool = {
-  type: 'function',
-  function: {
-    name: 'create_appointment',
-    description:
-      'Creates a confirmed appointment in the hospital system for the signed-in patient. Call only when doctor_name, date, time, and reason are all known.',
-    parameters: {
-      type: 'object',
-      properties: {
-        doctor_name: { type: 'string', description: 'Doctor full name, e.g. Dr. Ananya Sharma' },
-        date: { type: 'string', description: 'Appointment date as YYYY-MM-DD' },
-        time: { type: 'string', description: 'Slot start time as HH:mm (24h)' },
-        reason: { type: 'string', description: 'Symptoms or reason for visit' },
+function createAppointmentToolDefinition(): OpenAI.Chat.ChatCompletionTool {
+  return {
+    type: 'function',
+    function: {
+      name: 'create_appointment',
+      description:
+        'Creates a confirmed appointment for the signed-in patient. Use doctor_id from the system roster in your instructions (required). Call only when doctor_id, date, time, and reason are known.',
+      parameters: {
+        type: 'object',
+        properties: {
+          doctor_id: {
+            type: 'string',
+            description: 'Exact doctor id from the live roster (cuid), e.g. copy from the doctor_id field in the list',
+          },
+          doctor_name: {
+            type: 'string',
+            description: 'Exact full name from the same roster line as doctor_id (optional but recommended)',
+          },
+          date: { type: 'string', description: 'Appointment date as YYYY-MM-DD' },
+          time: { type: 'string', description: 'Slot start time as HH:mm (24h)' },
+          reason: { type: 'string', description: 'Symptoms or reason for visit' },
+        },
+        required: ['doctor_id', 'date', 'time', 'reason'],
       },
-      required: ['doctor_name', 'date', 'time', 'reason'],
     },
-  },
+  }
 }
 
 function cleanHistory(hist: ChatTurn[]) {
@@ -97,11 +110,15 @@ async function finalizeAssistantContent(
 
 function buildBaseMessages(
   conversationHistory: ChatTurn[],
-  userMessage: string
+  userMessage: string,
+  doctorRosterBlock: string
 ): OpenAI.Chat.ChatCompletionMessageParam[] {
   const trimmed = trimLeadingAssistants(cleanHistory(conversationHistory))
   const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-    { role: 'system', content: `${SYSTEM_PROMPT}\n\n${BOOKING_TOOLS_INSTRUCTION}` },
+    {
+      role: 'system',
+      content: `${SYSTEM_PROMPT}\n\n${doctorRosterBlock}\n\n${BOOKING_TOOLS_INSTRUCTION}`,
+    },
   ]
   for (const m of trimmed) {
     messages.push({
@@ -121,6 +138,8 @@ export async function* streamGroqBookingChat(input: {
   conversationHistory: ChatTurn[]
   patientId: string | undefined
   meta: { appointmentCreated: boolean }
+  /** Loaded from DB in /api/chat so the model only sees real doctors and ids. */
+  doctorRoster: DoctorRosterEntry[]
 }): AsyncGenerator<string, void, unknown> {
   const apiKey = process.env.GROQ_API_KEY?.trim()
   if (!apiKey?.startsWith('gsk_')) {
@@ -130,7 +149,10 @@ export async function* streamGroqBookingChat(input: {
   const model = process.env.GROQ_MODEL?.trim() || 'llama-3.3-70b-versatile'
   const client = new OpenAI({ apiKey, baseURL: GROQ_BASE_URL })
 
-  let messages = buildBaseMessages(input.conversationHistory, input.message)
+  const doctorRosterBlock = formatDoctorRosterForPrompt(input.doctorRoster)
+  const createAppointmentTool = createAppointmentToolDefinition()
+
+  let messages = buildBaseMessages(input.conversationHistory, input.message, doctorRosterBlock)
 
   const maxToolRounds = 6
 
@@ -140,7 +162,7 @@ export async function* streamGroqBookingChat(input: {
       completion = await client.chat.completions.create({
         model,
         messages,
-        tools: [CREATE_APPOINTMENT_TOOL],
+        tools: [createAppointmentTool],
         tool_choice: 'auto',
         max_tokens: 1024,
       })

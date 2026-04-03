@@ -10,6 +10,7 @@ import {
 } from '@/lib/gemini-stream-chat'
 import { getGroqKeyPresent } from '@/lib/groq-stream-chat'
 import { streamGroqBookingChat } from '@/lib/groq-booking-chat'
+import { getDoctorRosterForChat } from '@/lib/doctor-roster-prompt'
 import { streamOpenAIReply, getOpenAiKeyPresent } from '@/lib/openai-stream-chat'
 
 export const runtime = 'nodejs'
@@ -59,8 +60,14 @@ async function runGroqBooking(
   normalized: { message: string; conversationHistory: ChatTurn[] },
   patientId: string | undefined
 ) {
+  const doctorRoster = await getDoctorRosterForChat()
   const meta = { appointmentCreated: false }
-  for await (const chunk of streamGroqBookingChat({ ...normalized, patientId, meta })) {
+  for await (const chunk of streamGroqBookingChat({
+    ...normalized,
+    patientId,
+    meta,
+    doctorRoster,
+  })) {
     if (chunk) writeLine({ t: chunk })
   }
   writeLine({ done: true, appointmentCreated: meta.appointmentCreated })

@@ -28,6 +28,17 @@ function buildStandardTimeSlots() {
 const STANDARD_TIME_SLOTS = buildStandardTimeSlots() // Compute once at module load
 
 /**
+ * Heading label: avoid "Dr. Dr. Name" when API already stores "Dr. …" on user.name.
+ * @param {string} name
+ */
+function displayNameWithOptionalTitle(name) {
+  const t = String(name || '').trim()
+  if (!t) return 'your doctor'
+  if (/^dr\.?\s/i.test(t)) return t
+  return `Dr. ${t}`
+}
+
+/**
  * Normalize API/seed time strings to 'HH:mm' for comparison.
  * @param {string} raw
  */
@@ -184,8 +195,8 @@ export default function SlotCalendar({
   return (
     <div className={styles.wrap}>
       {/* Outer white card */}
-      <h2 className={styles.title}>Pick a time with Dr. {doctorName}</h2>
-      {/* Heading: doctor display name after literal Dr. */}
+      <h2 className={styles.title}>Pick a time with {displayNameWithOptionalTitle(doctorName)}</h2>
+      {/* Heading: single "Dr." prefix only when name is not already titled */}
       <div className={styles.navRow}>
         {/* Row: prev | month label | next */}
         <button
