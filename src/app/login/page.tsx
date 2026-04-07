@@ -45,8 +45,8 @@ export default function LoginPage() {
         return
       }
       const params = new URLSearchParams(window.location.search)
-      let next = params.get('callbackUrl') || '/book'
-      if (!next.startsWith('/') || next.startsWith('//')) next = '/book'
+      let next = params.get('callbackUrl') || '/dashboard'
+      if (!next.startsWith('/') || next.startsWith('//')) next = '/dashboard'
       setLoading(false)
       router.push(next)
       router.refresh()

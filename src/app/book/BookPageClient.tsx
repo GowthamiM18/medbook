@@ -72,12 +72,16 @@ export default function BookPageClient() {
   }
 
   async function book() {
-    if (!selectedDoctor || !selectedSlot || !symptoms.trim()) return
+    if (!selectedDoctor || !selectedSlot) return
     setBooking(true)
     const res = await fetch('/api/appointments', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ doctorId: selectedDoctor.id, slotId: selectedSlot.id, symptoms }),
+      body: JSON.stringify({
+        doctorId: selectedDoctor.id,
+        slotId: selectedSlot.id,
+        symptoms: symptoms.trim(),
+      }),
     })
     if (res.ok) {
       const data = await res.json()
@@ -163,7 +167,7 @@ export default function BookPageClient() {
                   <div className={styles.docInfo}>
                     <strong>{d.user.name}</strong>
                     <span>{d.specialty}</span>
-                    <span>⭐ {d.rating} · ${d.fee}</span>
+                    <span>⭐ {d.rating} · ₹{d.fee}</span>
                   </div>
                 </button>
               ))}
@@ -224,19 +228,18 @@ export default function BookPageClient() {
               </div>
               <div className={styles.summaryRow}>
                 <span>Fee</span>
-                <strong>${selectedDoctor.fee}</strong>
+                <strong>₹{selectedDoctor.fee}</strong>
               </div>
             </div>
 
             <div className={styles.symptomsSection}>
-              <label>Describe your symptoms or reason for visit *</label>
+              <label>Describe your symptoms or reason for visit</label>
               <textarea
                 className={styles.symptomsInput}
                 value={symptoms}
                 onChange={(e) => setSymptoms(e.target.value)}
                 placeholder="e.g. Chest pain and shortness of breath for the past 2 days..."
                 rows={4}
-                required
               />
             </div>
 
@@ -244,7 +247,7 @@ export default function BookPageClient() {
               <button className={styles.backBtn} onClick={() => setStep(2)}>← Back</button>
               <button
                 className={styles.confirmBtn}
-                disabled={booking || !symptoms.trim()}
+                disabled={booking}
                 onClick={book}
               >
                 {booking ? 'Booking...' : 'Confirm booking →'}

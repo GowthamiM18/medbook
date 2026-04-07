@@ -64,6 +64,12 @@ export default function DashboardPage() {
     fetchAppointments()
   }
 
+  async function handleSignOut() {
+    const ok = window.confirm('Are you sure you want to sign out?')
+    if (!ok) return
+    await signOut({ callbackUrl: '/' })
+  }
+
   if (status === 'loading' || loading) {
     return (
       <div className={styles.loading}>
@@ -86,7 +92,6 @@ export default function DashboardPage() {
         <nav className={styles.nav}>
           <a className={styles.navActive}>📅 Appointments</a>
           <Link href="/doctors" className={styles.navLink}>🔍 Find Doctors</Link>
-          <Link href="/book" className={styles.navLink}>✨ AI Booking</Link>
         </nav>
         <div className={styles.sidebarBottom}>
           <div className={styles.userInfo}>
@@ -98,7 +103,7 @@ export default function DashboardPage() {
               <p className={styles.userEmail}>{session?.user?.email}</p>
             </div>
           </div>
-          <button className={styles.signOut} onClick={() => signOut({ callbackUrl: '/' })}>
+          <button className={styles.signOut} onClick={handleSignOut}>
             Sign out
           </button>
         </div>
@@ -117,9 +122,6 @@ export default function DashboardPage() {
             <button className={styles.btnAI} onClick={() => setShowChat(true)}>
               ✨ Book with AI
             </button>
-            <Link href="/doctors" className={styles.btnBook}>
-              Browse doctors
-            </Link>
           </div>
         </div>
 

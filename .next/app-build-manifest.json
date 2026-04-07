@@ -18,12 +18,6 @@
       "static/css/app/login/page.css",
       "static/chunks/app/login/page.js"
     ],
-    "/book/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/book/page.css",
-      "static/chunks/app/book/page.js"
-    ],
     "/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

@@ -36,7 +36,7 @@ export default async function AdminDoctorsPage() {
                     <td>{d.specialty}</td>
                     <td>{d.experience}</td>
                     <td>{d.rating.toFixed(1)}</td>
-                    <td>{d.fee}</td>
+                    <td>₹{d.fee}</td>
                     <td>{d.location}</td>
                   </tr>
                 ))}

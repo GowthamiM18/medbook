@@ -120,7 +120,7 @@ export default function DoctorsPageClient() {
                 <div className={styles.cardMeta}>
                   <span>⭐ {d.rating}</span>
                   <span>🏥 {d.experience}y exp</span>
-                  <span>💰 ${d.fee}</span>
+                  <span>💰 ₹{d.fee}</span>
                 </div>
                 <p className={styles.location}>📍 {d.location}</p>
                 <Link href={`/book?doctorId=${d.id}`} className={styles.bookBtn}>

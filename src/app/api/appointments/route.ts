@@ -27,7 +27,18 @@ export async function POST(req: Request) {
   if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   try {
-    const { doctorId, slotId, symptoms } = await req.json()
+    const body = (await req.json()) as {
+      doctorId?: string
+      slotId?: string
+      symptoms?: string
+    }
+    const doctorId = String(body.doctorId ?? '').trim()
+    const slotId = String(body.slotId ?? '').trim()
+    const symptoms = String(body.symptoms ?? '').trim()
+
+    if (!doctorId || !slotId) {
+      return NextResponse.json({ error: 'doctorId and slotId are required' }, { status: 400 })
+    }
 
     const slot = await prisma.timeSlot.findUnique({ where: { id: slotId } })
     if (!slot || slot.isBooked) {
