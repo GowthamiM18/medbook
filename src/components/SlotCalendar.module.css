@@ -1,291 +1,137 @@
-/* SlotCalendar — Udumula Hospital booking; teal theme #2D9E8A, white surface */
 .wrap {
-  /* Root container: full width, white card feel */
   width: 100%;
-  max-width: 640px;
+  max-width: 1040px;
   margin: 0 auto;
-  background: #ffffff;
+  background: #fff;
+  border: 1px solid #e5e7eb;
   border-radius: 14px;
-  border: 1px solid #e2e8f0;
-  padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
 }
 
-.title {
-  /* Doctor line above the calendar */
-  font-family: 'DM Serif Display', Georgia, serif;
-  font-size: 1.35rem;
-  font-weight: 400;
-  color: #0f172a;
-  text-align: center;
-  margin: 0 0 20px;
-}
-
-/* Month navigation row */
-.navRow {
+.profileHeader {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 16px;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 14px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.navBtn {
-  /* Previous / next month arrows */
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  border: 1.5px solid #e2e8f0;
-  background: #ffffff;
-  color: #2d9e8a;
-  font-size: 18px;
-  line-height: 1;
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  background: #d9f7ef;
+  color: #0a7f61;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s, border-color 0.2s;
-}
-
-.navBtn:hover:not(:disabled) {
-  background: #f0fdfa;
-  border-color: #2d9e8a;
-}
-
-.navBtn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
-}
-
-.monthLabel {
-  /* Centered month + year */
-  flex: 1;
-  text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 600;
-  color: #0f172a;
-  font-variant-numeric: tabular-nums;
 }
 
-/* Weekday headers */
-.weekdays {
+.profileMeta { display: flex; flex-direction: column; gap: 0; }
+.doctorName { margin: 0; color: #0f172a; font-size: 1rem; font-weight: 700; line-height: 1.1; }
+.doctorSub { margin: 0; color: #64748b; font-size: 0.82rem; line-height: 1.1; }
+
+.layout {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  margin-bottom: 8px;
+  grid-template-columns: 1fr 1.2fr;
+  min-height: 500px;
 }
 
-.weekday {
-  text-align: center;
-  font-size: 11px;
-  font-weight: 600;
+.leftPanel, .rightPanel { padding: 14px 12px; background: #fff; min-width: 0; }
+.leftPanel { border-right: 1px solid #e5e7eb; }
+
+.controlBlock + .controlBlock { margin-top: 14px; }
+.blockTitle {
+  margin: 0 0 8px;
+  color: #6b7280;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #64748b;
-  padding: 4px 0;
-}
-
-/* Calendar body: 7 columns */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
-}
-
-.cell {
-  /* One day cell */
-  aspect-ratio: 1;
-  max-height: 52px;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0f172a;
-  position: relative;
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-
-.cell:hover:not(:disabled):not(.past):not(.empty) {
-  background: #f0fdfa;
-}
-
-.cell.past {
-  /* Before today: not interactive */
-  color: #cbd5e1;
-  background: #f8fafc;
-  cursor: not-allowed;
-}
-
-.cell.empty {
-  /* Padding cell outside current month */
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.cell.today {
-  /* Blue border for current day */
-  border-color: #2563eb;
-}
-
-.cell.selected:not(.past) {
-  /* Filled selection */
-  background: #2563eb;
-  color: #ffffff;
-  border-color: #2563eb;
-}
-
-.cell.selected.today:not(.past) {
-  /* Selected + today: keep blue fill */
-  border-color: #1d4ed8;
-}
-
-.dots {
-  display: flex;
-  gap: 3px;
-  align-items: center;
-  justify-content: center;
-  min-height: 6px;
-}
-
-.dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-}
-
-.dotGreen {
-  background: #22c55e;
-}
-
-.dotRed {
-  background: #ef4444;
-}
-
-.cell.selected .dotGreen,
-.cell.selected .dotRed {
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.6);
-}
-
-/* Slot panel below calendar */
-.slotPanel {
-  margin-top: 24px;
-  padding-top: 20px;
-  border-top: 1px solid #e2e8f0;
-}
-
-.slotPanelTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: #475569;
-  margin: 0 0 12px;
-}
-
-.slotGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 8px;
-}
-
-.slotBtn {
-  padding: 10px 8px;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  border: 1.5px solid #e2e8f0;
-  background: #ffffff;
-  color: #0f172a;
-  transition: border-color 0.15s, background 0.15s, color 0.15s;
-}
-
-.slotBtn.available {
-  border-color: #22c55e;
-  background: #ffffff;
-}
-
-.slotBtn.available:hover {
-  border-color: #2d9e8a;
-  background: #f0fdfa;
-}
-
-.slotBtn.booked {
-  background: #e2e8f0;
-  color: #94a3b8;
-  text-decoration: line-through;
-  cursor: not-allowed;
-  border-color: #cbd5e1;
-}
-
-.slotBtn.missing {
-  /* No slot in schedule for this time */
-  background: #f8fafc;
-  color: #cbd5e1;
-  border-color: #e2e8f0;
-  cursor: not-allowed;
+  letter-spacing: 0.08em;
   font-size: 12px;
-}
-
-.slotBtn.selected {
-  background: #2d9e8a;
-  border-color: #2d9e8a;
-  color: #ffffff;
-}
-
-.slotBtn.selected:hover {
-  background: #268f7d;
-}
-
-/* Bottom actions */
-.actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 28px;
-  padding-top: 8px;
-}
-
-.backBtn {
-  padding: 12px 24px;
-  border: 1.5px solid #e2e8f0;
-  background: #ffffff;
-  border-radius: 8px;
-  font-size: 15px;
-  color: #64748b;
-  transition: background 0.2s;
-}
-
-.backBtn:hover {
-  background: #f8fafc;
-}
-
-.continueBtn {
-  flex: 1;
-  padding: 12px 28px;
-  background: #2d9e8a;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  font-size: 15px;
   font-weight: 500;
-  transition: background 0.2s;
 }
 
-.continueBtn:hover:not(:disabled) {
-  background: #248a78;
+.dateScroller {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(62px, 62px);
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
 }
+.dateScroller::-webkit-scrollbar { height: 6px; }
+.dateScroller::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
 
-.continueBtn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+.dayCell {
+  border: 1px solid #d1d5db; border-radius: 10px; background: #fff;
+  padding: 8px 2px; display: flex; flex-direction: column; align-items: center; gap: 4px;
 }
+.dayName { font-size: 0.62rem; color: #334155; font-weight: 700; text-transform: uppercase; }
+.dayNum { font-size: 1rem; color: #0f172a; font-weight: 700; }
+.dayDot, .dayDotMuted { width: 5px; height: 5px; border-radius: 50%; }
+.dayDot { background: #22c55e; }
+.dayDotMuted { background: #e2e8f0; }
+.daySelected { background: #0fa776; border-color: #0a8d64; }
+.daySelected .dayName, .daySelected .dayNum { color: #fff; }
+.daySelected .dayDot { background: #dcfce7; }
+.dayPast { background: #f8fafc; cursor: not-allowed; opacity: 0.55; }
 
-.placeholder {
-  font-size: 14px;
-  color: #94a3b8;
-  text-align: center;
-  padding: 16px 0;
+.visitGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.visitCard {
+  border: 1px solid #e5e7eb; border-radius: 10px; background: #fff; color: #111;
+  padding: 10px 8px; min-height: 70px; display: flex; flex-direction: column;
+  align-items: flex-start; justify-content: center; gap: 4px; font-size: 0.84rem;
+}
+.visitCardActive { border-color: #0fa776; background: #ecfdf5; color: #0a7f61; }
+.visitIcon { font-size: 0.95rem; line-height: 1; }
+
+.slotHeader { margin-bottom: 10px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+.slotPanelTitle { margin: 0; font-size: 0.9rem; font-weight: 700; color: #0f172a; }
+.slotCount { margin: 0; font-size: 0.8rem; color: #64748b; }
+
+.slotList {
+  max-height: 390px; overflow: auto; padding-right: 6px;
+  scrollbar-width: thin; scrollbar-color: #cbd5e1 transparent;
+}
+.slotList::-webkit-scrollbar { width: 7px; }
+.slotList::-webkit-scrollbar-track { background: transparent; }
+.slotList::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+
+.slotGroup + .slotGroup { margin-top: 12px; }
+.groupTitle {
+  margin: 0 0 6px; color: #6b7280; font-size: 11px; font-weight: 500; text-transform: uppercase;
+}
+.slotGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.slotBtn {
+  border: 1px solid #e5e7eb; background: #fff; color: #111;
+  border-radius: 8px; padding: 8px 10px; font-size: 13px;
+  display: flex; align-items: center; justify-content: center; text-align: center;
+}
+.slotSelected { background: #0fa776; border-color: #0fa776; color: #fff; font-weight: 500; }
+.slotBooked { background: #f1f5f9; color: #94a3b8; border-color: #cbd5e1; cursor: not-allowed; }
+.slotMissing { background: #f8fafc; color: #cbd5e1; border-color: #e2e8f0; cursor: not-allowed; }
+.bookedTag { display: none; }
+
+.footerBar {
+  position: sticky; bottom: 0; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  background: #fff; border-top: 1px solid #e5e7eb; padding: 10px 12px;
+}
+.footerHint { margin: 0; color: #1f2937; font-size: 0.82rem; font-weight: 500; }
+.continueBtn {
+  min-width: 170px; padding: 9px 12px; border: 1px solid #0fa776; border-radius: 10px;
+  background: #0fa776; color: #fff; font-size: 0.85rem; font-weight: 700;
+}
+.continueBtn:disabled { border-color: #d1d5db; background: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
+
+@media (max-width: 768px) {
+  .layout { grid-template-columns: 1fr; min-height: unset; }
+  .leftPanel { border-right: none; border-bottom: 1px solid #e5e7eb; }
+  .slotGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .footerBar { flex-direction: column; align-items: stretch; }
+  .continueBtn { width: 100%; }
 }

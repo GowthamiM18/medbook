@@ -7,7 +7,7 @@ const specialties = [
   { icon: '🫀', name: 'Cardiology', desc: 'Heart & vascular care' },
   { icon: '🧠', name: 'Neurology', desc: 'Brain & nervous system' },
   { icon: '🦴', name: 'Orthopedics', desc: 'Bones & joints' },
-  { icon: '🌿', name: 'General Practice', desc: 'Primary care' },
+  { icon: '🌿', name: 'General Physician', desc: 'Primary care' },
   { icon: '👶', name: 'Pediatrics', desc: 'Children\'s health' },
   { icon: '✨', name: 'Dermatology', desc: 'Skin & hair' },
 ]
@@ -23,7 +23,6 @@ export default function HomePage() {
             Udumula Hospital Appointment Booking
           </div>
           <div className={styles.navLinks}>
-            <Link href="/doctors">Doctors</Link>
             <Link href="/login" className={styles.btnOutline}>Sign in</Link>
             <Link href="/register" className={styles.btnPrimary}>Get started</Link>
           </div>

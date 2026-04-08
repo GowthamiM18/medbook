@@ -1,9 +1,15 @@
 /* src/app/dashboard/dashboard.module.css */
-.page { display: flex; min-height: 100vh; flex-direction: column; }
+.page {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  font-family: Inter, 'Segoe UI', Roboto, Arial, sans-serif;
+  background: #f8fafc;
+}
 
 /* Sidebar */
 .sidebar {
-  width: 100%; min-height: auto; background: var(--navy);
+  width: 100%; min-height: auto; background: #0f2535;
   display: flex; flex-direction: column; padding: 24px 16px;
   position: relative; top: auto; left: auto;
 }
@@ -20,7 +26,7 @@
   width: var(--brand-nav-dot);
   height: var(--brand-nav-dot);
   border-radius: 50%;
-  background: var(--teal);
+  background: #0fa776;
   flex-shrink: 0;
 }
 .nav { display: flex; flex-direction: column; gap: 4px; flex: 1; }
@@ -36,7 +42,7 @@
 .userInfo { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .avatar {
   width: 36px; height: 36px; border-radius: 50%;
-  background: var(--teal); display: flex; align-items: center; justify-content: center;
+  background: #0fa776; display: flex; align-items: center; justify-content: center;
   font-size: 14px; font-weight: 600; color: white;
 }
 .userName { font-size: 13px; color: white; font-weight: 500; }
@@ -63,11 +69,11 @@
 .headerSub { color: var(--slate); font-size: 15px; }
 .headerActions { display: flex; gap: 12px; flex-direction: column; width: 100%; }
 .btnAI {
-  background: var(--teal); color: white; border: none;
+  background: #0fa776; color: white; border: none;
   padding: 10px 18px; border-radius: 8px; font-size: 14px; font-weight: 500;
   cursor: pointer; transition: background 0.2s;
 }
-.btnAI:hover { background: var(--teal-dark); }
+.btnAI:hover { background: #0c8a62; }
 .btnBook {
   background: white; color: var(--navy);
   border: 1.5px solid var(--border); padding: 10px 18px;
@@ -79,12 +85,113 @@
 /* Stats */
 .statsGrid { display: grid; grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
 .statCard {
-  background: white; border: 1px solid var(--border); border-radius: 12px;
+  background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
   padding: 20px; display: flex; align-items: center; gap: 14px;
 }
 .statIcon { font-size: 28px; }
+.iconCalendar, .iconPrescription, .iconVisits, .iconRecords {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+.iconCalendar { background: #dff5ea; }
+.iconPrescription { background: #fff3df; }
+.iconVisits { background: #e8f0ff; }
+.iconRecords { background: #efe8ff; }
 .statNum { font-size: 28px; font-weight: 700; color: var(--navy); }
 .statLabel { font-size: 13px; color: var(--slate); }
+
+.healthGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+.healthCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  padding: 18px;
+}
+.healthCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.healthCardHeader h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #111827;
+  font-weight: 600;
+}
+.linkBtn {
+  border: none;
+  background: transparent;
+  color: #0fa776;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.linkBtn:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+.healthList {
+  display: flex;
+  flex-direction: column;
+}
+.healthEmpty {
+  padding: 12px 0;
+  color: #64748b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.healthEmpty p {
+  margin: 0;
+}
+.healthListItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid #eef2f7;
+}
+.healthListItem:first-child { border-top: none; padding-top: 4px; }
+.listDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  flex-shrink: 0;
+}
+.healthInfo { flex: 1; }
+.healthTitle {
+  margin: 0;
+  font-size: 15px;
+  color: #0f172a;
+  line-height: 1.25;
+}
+.healthMeta {
+  margin: 3px 0 0;
+  font-size: 13px;
+  color: #64748b;
+}
+.healthBadge {
+  border-radius: 999px;
+  font-size: 13px;
+  padding: 4px 12px;
+}
+.healthBadgeSuccess { background: #eaf7ea; color: #3f7f3a; }
+.healthBadgeNeutral { background: #f7efe2; color: #8a6d3b; }
+.healthBadgeInfo { background: #e7f0fb; color: #2f6f9f; }
+.healthBadgeWarning { background: #fdecef; color: #9f3f4f; }
 
 /* Appointments */
 .section { margin-bottom: 36px; }
@@ -101,7 +208,8 @@
 .emptyHint a:hover { text-decoration: underline; }
 .apptList { display: flex; flex-direction: column; gap: 12px; }
 .apptCard {
-  background: white; border: 1px solid var(--border); border-radius: 12px;
+  background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   padding: 16px; display: flex; flex-direction: column; align-items: stretch; gap: 14px; width: 100%;
   animation: fadeIn 0.3s ease;
 }
@@ -112,22 +220,60 @@
 .apptDay { display: block; font-size: 11px; text-transform: uppercase; color: var(--teal); font-weight: 600; }
 .apptDate { display: block; font-size: 22px; font-weight: 700; color: var(--navy); }
 .apptInfo { flex: 1; }
-.apptInfo h3 { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 4px; font-family: 'DM Sans', sans-serif; }
+.apptInfo h3 { font-size: 16px; font-weight: 600; color: var(--navy); margin-bottom: 4px; }
 .apptInfo p { font-size: 13px; color: var(--slate); }
 .apptLocation { margin-top: 2px; }
 .apptToken { font-size: 13px; color: var(--navy); margin-top: 6px; }
 .apptSymptoms { color: var(--slate-light); font-style: italic; margin-top: 4px; }
+.reviewSimBtn {
+  margin-top: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #dbeafe;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+  cursor: pointer;
+}
 .apptRight { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 8px; width: 100%; }
 .badge {
-  padding: 4px 12px; border-radius: 100px;
-  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+  padding: 6px 12px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.2px;
+}
+.badgePending { background: #fef9c3; color: #a16207; }
+.badgeConfirmed { background: #dcfce7; color: #166534; }
+.badgeRescheduled { background: #eff6ff; color: #1d4ed8; }
+.badgeNeutral { background: #f1f5f9; color: #334155; }
+.inlineActions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .cancelBtn {
-  background: transparent; border: 1px solid var(--border); color: var(--slate);
+  background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
   padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
 }
-.cancelBtn:hover { border-color: var(--red); color: var(--red); }
+.cancelBtn:hover { border-color: #fb923c; color: #7c2d12; }
+.secondaryBtn {
+  background: #e2e8f0;
+  color: #0f172a;
+  border: 1px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.primaryGhostBtn {
+  background: #dbeafe;
+  color: #1e3a8a;
+  border: 1px solid #bfdbfe;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
 
 /* Loading */
 .loading {
@@ -164,6 +310,31 @@
   transition: background 0.2s;
 }
 .modalConfirm:hover { background: #dc2626; }
+.detailsGrid {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+  margin-bottom: 18px;
+}
+.detailsRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-top: 1px solid #e2e8f0;
+}
+.detailsRow:first-child {
+  border-top: none;
+}
+.detailsRow span {
+  color: #64748b;
+  font-size: 13px;
+}
+.detailsRow strong {
+  color: #0f172a;
+  font-size: 13px;
+  text-align: right;
+}
 
 @media (min-width: 768px) {
   .header {
@@ -180,8 +351,12 @@
   }
 
   .statsGrid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     margin-bottom: 36px;
+  }
+
+  .healthGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .apptCard {

@@ -15,6 +15,10 @@ type Doctor = {
 }
 type Slot = { id: string; date: string; startTime: string; endTime?: string; booked?: boolean }
 
+function displaySpecialty(s: string) {
+  return s === 'General Practice' ? 'General Physician' : s
+}
+
 export default function BookPageClient() {
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -33,6 +37,7 @@ export default function BookPageClient() {
   } | null>(null)
 
   const doctorId = searchParams.get('doctorId')
+  const rescheduleFrom = searchParams.get('rescheduleFrom')
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/login?callbackUrl=/book')
@@ -50,7 +55,11 @@ export default function BookPageClient() {
   }, [doctorId, doctors])
 
   useEffect(() => {
-    if (selectedDoctor) fetchSlots()
+    if (selectedDoctor) {
+      // Avoid stale slot/doctor combinations after doctor change.
+      setSelectedSlot(null)
+      fetchSlots()
+    }
   }, [selectedDoctor])
 
   async function fetchDoctors() {
@@ -74,25 +83,31 @@ export default function BookPageClient() {
   async function book() {
     if (!selectedDoctor || !selectedSlot) return
     setBooking(true)
-    const res = await fetch('/api/appointments', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        doctorId: selectedDoctor.id,
-        slotId: selectedSlot.id,
-        symptoms: symptoms.trim(),
-      }),
-    })
-    if (res.ok) {
-      const data = await res.json()
-      setConfirmation({
-        tokenNumber: data.tokenNumber ?? '',
+    try {
+      const res = await fetch('/api/appointments', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          doctorId: selectedDoctor.id,
+          slotId: selectedSlot.id,
+          symptoms: symptoms.trim(),
+          rescheduleFrom: rescheduleFrom || undefined,
+        }),
       })
-    } else {
-      const err = await res.json().catch(() => ({}))
-      alert((err as { error?: string }).error || 'Booking failed. Please try again.')
+      if (res.ok) {
+        const data = await res.json()
+        setConfirmation({
+          tokenNumber: data.tokenNumber ?? '',
+        })
+      } else {
+        const err = await res.json().catch(() => ({}))
+        alert((err as { error?: string }).error || 'Booking failed. Please try again.')
+      }
+    } catch {
+      alert('Network error while booking. Please try again.')
+    } finally {
+      setBooking(false)
     }
-    setBooking(false)
   }
 
   if (confirmation) {
@@ -103,13 +118,14 @@ export default function BookPageClient() {
           <h2>Appointment booked!</h2>
           <p>
             Your appointment with <strong>{selectedDoctor?.user.name}</strong> on{' '}
-            <strong>{selectedSlot?.date}</strong> at <strong>{selectedSlot?.startTime}</strong> is confirmed.
+            <strong>{selectedSlot?.date}</strong> at <strong>{selectedSlot?.startTime}</strong> has been booked.
           </p>
           <div className={styles.tokenBox}>
-            <span className={styles.tokenLabel}>Your queue token</span>
+            <span className={styles.tokenLabel}>Your Reference ID</span>
             <span className={styles.tokenValue}>{confirmation.tokenNumber || '—'}</span>
-            <span className={styles.tokenHint}>Show this token at the hospital reception desk.</span>
+            <span className={styles.tokenHint}>Show this Reference ID at the hospital reception desk.</span>
           </div>
+          <p className={styles.tokenHint}>Our team will review and confirm your slot shortly.</p>
           <Link href="/dashboard" className={styles.btnPrimary}>
             View my appointments →
           </Link>
@@ -166,7 +182,7 @@ export default function BookPageClient() {
                   </div>
                   <div className={styles.docInfo}>
                     <strong>{d.user.name}</strong>
-                    <span>{d.specialty}</span>
+                    <span>{displaySpecialty(d.specialty)}</span>
                     <span>⭐ {d.rating} · ₹{d.fee}</span>
                   </div>
                 </button>
@@ -191,10 +207,11 @@ export default function BookPageClient() {
             ) : (
               <SlotCalendar
                 doctorName={selectedDoctor.user.name}
+                doctorSpecialty={displaySpecialty(selectedDoctor.specialty)}
+                doctorLocation={selectedDoctor.location}
                 slots={slots}
                 selectedSlot={selectedSlot}
                 onSlotSelect={setSelectedSlot}
-                onBack={() => setStep(1)}
                 onContinue={() => setStep(3)}
                 continueDisabled={!selectedSlot}
               />
@@ -212,7 +229,7 @@ export default function BookPageClient() {
               </div>
               <div className={styles.summaryRow}>
                 <span>Specialty</span>
-                <strong>{selectedDoctor.specialty}</strong>
+                <strong>{displaySpecialty(selectedDoctor.specialty)}</strong>
               </div>
               <div className={styles.summaryRow}>
                 <span>Date</span>

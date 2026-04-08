@@ -5,9 +5,11 @@ import { usePathname } from 'next/navigation'
 import styles from './admin.module.css'
 
 const links = [
-  { href: '/admin/overview', label: 'Overview' },
-  { href: '/admin/appointments', label: 'Appointments' },
-  { href: '/admin/doctors', label: 'Doctors List' },
+  { href: '/admin/overview', label: 'Dashboard' },
+  { href: '/admin/appointments', label: 'Patient List' },
+  { href: '/admin/doctors', label: 'Doctor Schedules' },
+  { href: '/admin/overview?panel=pharmacy', label: 'Pharmacy Orders' },
+  { href: '/admin/overview?panel=inventory', label: 'Inventory' },
 ]
 
 export default function AdminSidebar() {

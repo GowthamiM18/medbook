@@ -213,7 +213,7 @@ export async function executeCreateAppointment(
           doctorId: doctor.id,
           slotId,
           symptoms: reason,
-          status: 'CONFIRMED',
+          status: 'PENDING',
           tokenNumber,
           patientPhone,
         },
@@ -227,7 +227,7 @@ export async function executeCreateAppointment(
 
     return {
       ok: true,
-      message: `Booked with ${doctor.user.name} on ${ymd} at ${hhmm}. Queue token ${appointment.tokenNumber}.`,
+      message: `Request submitted with ${doctor.user.name} on ${ymd} at ${hhmm}. Status: Pending Review. Reference ID ${appointment.tokenNumber}.`,
       doctorName: doctor.user.name,
       date: ymd,
       time: hhmm,

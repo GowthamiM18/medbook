@@ -31,10 +31,12 @@ export async function POST(req: Request) {
       doctorId?: string
       slotId?: string
       symptoms?: string
+      rescheduleFrom?: string
     }
     const doctorId = String(body.doctorId ?? '').trim()
     const slotId = String(body.slotId ?? '').trim()
     const symptoms = String(body.symptoms ?? '').trim()
+    const rescheduleFrom = String(body.rescheduleFrom ?? '').trim()
 
     if (!doctorId || !slotId) {
       return NextResponse.json({ error: 'doctorId and slotId are required' }, { status: 400 })
@@ -43,6 +45,15 @@ export async function POST(req: Request) {
     const slot = await prisma.timeSlot.findUnique({ where: { id: slotId } })
     if (!slot || slot.isBooked) {
       return NextResponse.json({ error: 'Slot no longer available' }, { status: 409 })
+    }
+    if (slot.doctorId !== doctorId) {
+      return NextResponse.json(
+        {
+          error:
+            'Selected slot does not belong to this doctor. Please pick a slot again from the selected doctor.',
+        },
+        { status: 400 }
+      )
     }
 
     const user = await prisma.user.findUnique({
@@ -61,6 +72,28 @@ export async function POST(req: Request) {
     }
 
     const appointment = await prisma.$transaction(async (tx) => {
+      let oldSlotId: string | null = null
+      if (rescheduleFrom) {
+        const oldAppt = await tx.appointment.findFirst({
+          where: {
+            id: rescheduleFrom,
+            patientId: session.user.id,
+          },
+          select: { id: true, slotId: true },
+        })
+        if (!oldAppt) {
+          throw new Error('Reschedule source appointment not found for this user.')
+        }
+        oldSlotId = oldAppt.slotId
+        await tx.appointment.update({
+          where: { id: oldAppt.id },
+          data: {
+            status: 'CANCELLED',
+            notes: 'Rescheduled by patient',
+          },
+        })
+      }
+
       const tokenNumber = await generateUniqueAppointmentToken(tx)
 
       const created = await tx.appointment.create({
@@ -69,7 +102,7 @@ export async function POST(req: Request) {
           doctorId,
           slotId,
           symptoms,
-          status: 'CONFIRMED',
+          status: 'PENDING',
           tokenNumber,
           patientPhone,
         },
@@ -83,6 +116,12 @@ export async function POST(req: Request) {
         where: { id: slotId },
         data: { isBooked: true },
       })
+      if (oldSlotId && oldSlotId !== slotId) {
+        await tx.timeSlot.update({
+          where: { id: oldSlotId },
+          data: { isBooked: false },
+        })
+      }
 
       return created
     })
@@ -90,6 +129,9 @@ export async function POST(req: Request) {
     return NextResponse.json(appointment)
   } catch (err) {
     console.error(err)
-    return NextResponse.json({ error: 'Booking failed' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Booking failed due to a server/database issue. Please retry in a moment.' },
+      { status: 500 }
+    )
   }
 }

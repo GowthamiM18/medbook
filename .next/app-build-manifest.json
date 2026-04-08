@@ -23,6 +23,28 @@
       "static/chunks/main-app.js",
       "static/css/app/dashboard/page.css",
       "static/chunks/app/dashboard/page.js"
+    ],
+    "/admin/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/admin/login/page.css",
+      "static/chunks/app/admin/login/page.js"
+    ],
+    "/admin/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/layout.js"
+    ],
+    "/admin/(dashboard)/overview/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/admin/(dashboard)/overview/page.js"
+    ],
+    "/admin/(dashboard)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/admin/(dashboard)/layout.css",
+      "static/chunks/app/admin/(dashboard)/layout.js"
     ]
   }
 }

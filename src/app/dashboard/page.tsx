@@ -14,21 +14,43 @@ type Appointment = {
   symptoms: string
   tokenNumber?: string
   createdAt: string
-  doctor: { user: { name: string }; specialty: string; location: string }
+  doctor: { id: string; user: { name: string }; specialty: string; location: string }
   slot: { date: string; startTime: string; endTime: string }
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  CONFIRMED: '#dcfce7',
-  PENDING: '#fef9c3',
-  CANCELLED: '#fee2e2',
-  COMPLETED: '#e0f2fe',
+const BADGE_CLASS: Record<string, string> = {
+  PENDING: styles.badgePending,
+  CONFIRMED: styles.badgeConfirmed,
+  RESCHEDULED: styles.badgeRescheduled,
+  COMPLETED: styles.badgeNeutral,
+  CANCELLED: styles.badgeNeutral,
 }
-const STATUS_TEXT: Record<string, string> = {
-  CONFIRMED: '#166534',
-  PENDING: '#854d0e',
-  CANCELLED: '#991b1b',
-  COMPLETED: '#075985',
+
+const STATUS_LABEL: Record<string, string> = {
+  PENDING: 'Pending',
+  CONFIRMED: 'Confirmed',
+  RESCHEDULED: 'Rescheduled',
+  COMPLETED: 'Completed',
+  CANCELLED: 'Cancelled',
+}
+
+type PrescriptionItem = {
+  id: string
+  medicine: string
+  doctor: string
+  date: string
+  status: 'Active' | 'Completed'
+}
+
+type TestResultItem = {
+  id: string
+  test: string
+  date: string
+  status: 'Normal' | 'Pending' | 'Review'
+}
+
+function displaySpecialty(s: string) {
+  return s === 'General Practice' ? 'General Physician' : s
 }
 
 export default function DashboardPage() {
@@ -38,6 +60,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true)
   const [showChat, setShowChat] = useState(false)
   const [cancelId, setCancelId] = useState<string | null>(null)
+  const [detailsAppt, setDetailsAppt] = useState<Appointment | null>(null)
 
   useEffect(() => {
     if (status === 'unauthenticated') router.push('/login')
@@ -70,6 +93,10 @@ export default function DashboardPage() {
     await signOut({ callbackUrl: '/' })
   }
 
+  function goToReschedule(a: Appointment) {
+    router.push(`/book?doctorId=${encodeURIComponent(a.doctor.id)}&rescheduleFrom=${encodeURIComponent(a.id)}`)
+  }
+
   if (status === 'loading' || loading) {
     return (
       <div className={styles.loading}>
@@ -79,8 +106,12 @@ export default function DashboardPage() {
     )
   }
 
-  const upcoming = appointments.filter((a) => a.status === 'CONFIRMED')
-  const past = appointments.filter((a) => a.status !== 'CONFIRMED')
+  const upcoming = appointments.filter((a) => ['PENDING', 'CONFIRMED', 'RESCHEDULED'].includes(a.status))
+  const past = appointments.filter((a) => ['COMPLETED', 'CANCELLED'].includes(a.status))
+  const totalVisits = appointments.length
+  const clinicalRecords = appointments.length
+  const recentPrescriptions: PrescriptionItem[] = []
+  const testResults: TestResultItem[] = []
 
   return (
     <div className={styles.page}>
@@ -91,7 +122,9 @@ export default function DashboardPage() {
         </Link>
         <nav className={styles.nav}>
           <a className={styles.navActive}>📅 Appointments</a>
-          <Link href="/doctors" className={styles.navLink}>🔍 Find Doctors</Link>
+          <Link href="/doctors" className={styles.navLink}>🔍 Specialist Directory</Link>
+          <Link href="/dashboard?tab=test-results" className={styles.navLink}>📄 Test Results</Link>
+          <Link href="/dashboard?tab=prescriptions" className={styles.navLink}>📋 Prescriptions</Link>
         </nav>
         <div className={styles.sidebarBottom}>
           <div className={styles.userInfo}>
@@ -128,26 +161,98 @@ export default function DashboardPage() {
         {/* Stats */}
         <div className={styles.statsGrid}>
           <div className={styles.statCard}>
-            <span className={styles.statIcon}>📅</span>
+            <span className={`${styles.statIcon} ${styles.iconCalendar}`}>📅</span>
             <div>
               <p className={styles.statNum}>{upcoming.length}</p>
               <p className={styles.statLabel}>Upcoming</p>
             </div>
           </div>
           <div className={styles.statCard}>
-            <span className={styles.statIcon}>✅</span>
+            <span className={`${styles.statIcon} ${styles.iconPrescription}`}>💊</span>
             <div>
-              <p className={styles.statNum}>{appointments.filter(a=>a.status==='COMPLETED').length}</p>
-              <p className={styles.statLabel}>Completed</p>
+              <p className={styles.statNum}>{recentPrescriptions.length > 0 ? recentPrescriptions.length : '--'}</p>
+              <p className={styles.statLabel}>Recent Prescriptions</p>
             </div>
           </div>
           <div className={styles.statCard}>
-            <span className={styles.statIcon}>🏥</span>
+            <span className={`${styles.statIcon} ${styles.iconVisits}`}>🏥</span>
             <div>
-              <p className={styles.statNum}>{appointments.length}</p>
+              <p className={styles.statNum}>{totalVisits}</p>
               <p className={styles.statLabel}>Total visits</p>
             </div>
           </div>
+          <div className={styles.statCard}>
+            <span className={`${styles.statIcon} ${styles.iconRecords}`}>📑</span>
+            <div>
+              <p className={styles.statNum}>{clinicalRecords}</p>
+              <p className={styles.statLabel}>Clinical Records</p>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.healthGrid}>
+          <section className={styles.healthCard}>
+            <div className={styles.healthCardHeader}>
+              <h3>Recent Prescriptions</h3>
+              <button className={styles.linkBtn} disabled={recentPrescriptions.length === 0}>View all</button>
+            </div>
+            <div className={styles.healthList}>
+              {recentPrescriptions.length === 0 ? (
+                <div className={styles.healthEmpty}>
+                  <p>No recent prescriptions found.</p>
+                  <p>Your medical history will appear here.</p>
+                </div>
+              ) : recentPrescriptions.map((item) => (
+                <div key={item.id} className={styles.healthListItem}>
+                  <span className={styles.listDot} />
+                  <div className={styles.healthInfo}>
+                    <p className={styles.healthTitle}>{item.medicine}</p>
+                    <p className={styles.healthMeta}>{item.doctor} · {item.date}</p>
+                  </div>
+                  <span
+                    className={`${styles.healthBadge} ${
+                      item.status === 'Active' ? styles.healthBadgeSuccess : styles.healthBadgeNeutral
+                    }`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+          <section className={styles.healthCard}>
+            <div className={styles.healthCardHeader}>
+              <h3>Test Results</h3>
+              <button className={styles.linkBtn} disabled={testResults.length === 0}>View all</button>
+            </div>
+            <div className={styles.healthList}>
+              {testResults.length === 0 ? (
+                <div className={styles.healthEmpty}>
+                  <p>No pending lab results.</p>
+                  <p>Your medical history will appear here.</p>
+                </div>
+              ) : testResults.map((item) => (
+                <div key={item.id} className={styles.healthListItem}>
+                  <span className={styles.listDot} />
+                  <div className={styles.healthInfo}>
+                    <p className={styles.healthTitle}>{item.test}</p>
+                    <p className={styles.healthMeta}>{item.date}</p>
+                  </div>
+                  <span
+                    className={`${styles.healthBadge} ${
+                      item.status === 'Normal'
+                        ? styles.healthBadgeSuccess
+                        : item.status === 'Pending'
+                          ? styles.healthBadgeInfo
+                          : styles.healthBadgeWarning
+                    }`}
+                  >
+                    {item.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
 
         {/* Upcoming */}
@@ -158,13 +263,15 @@ export default function DashboardPage() {
               <p>No upcoming appointments.</p>
               <p className={styles.emptyHint}>
                 Doctor names, specialty, and location show up here after you book. Browse all doctors under{' '}
-                <Link href="/doctors">Find Doctors</Link> or use <Link href="/book">AI Booking</Link>.
+                <Link href="/doctors">Specialist Directory</Link> or use <Link href="/book">AI Booking</Link>.
               </p>
               <Link href="/book" className={styles.btnBook}>Book your first appointment →</Link>
             </div>
           ) : (
             <div className={styles.apptList}>
-              {upcoming.map((a) => (
+              {upcoming.map((a) => {
+                const status = a.status
+                return (
                 <div key={a.id} className={styles.apptCard}>
                   <div className={styles.apptDateBlock}>
                     <span className={styles.apptDay}>
@@ -176,29 +283,41 @@ export default function DashboardPage() {
                   </div>
                   <div className={styles.apptInfo}>
                     <h3>{a.doctor.user.name}</h3>
-                    <p>{a.doctor.specialty} · {a.slot.startTime} – {a.slot.endTime}</p>
+                    <p>{displaySpecialty(a.doctor.specialty)} · {a.slot.startTime} - {a.slot.endTime}</p>
                     <p className={styles.apptLocation}>📍 {a.doctor.location}</p>
                     {a.tokenNumber ? (
-                      <p className={styles.apptToken}>Token: <strong>{a.tokenNumber}</strong></p>
+                      <p className={styles.apptToken}>Reference ID: <strong>{a.tokenNumber}</strong></p>
                     ) : null}
                     {a.symptoms && <p className={styles.apptSymptoms}>"{a.symptoms}"</p>}
                   </div>
                   <div className={styles.apptRight}>
-                    <span
-                      className={styles.badge}
-                      style={{ background: STATUS_COLORS[a.status], color: STATUS_TEXT[a.status] }}
-                    >
-                      {a.status}
+                    <span className={`${styles.badge} ${BADGE_CLASS[status] || styles.badgeNeutral}`}>
+                      {STATUS_LABEL[status] || status}
                     </span>
-                    <button
-                      className={styles.cancelBtn}
-                      onClick={() => setCancelId(a.id)}
-                    >
-                      Cancel
-                    </button>
+                    {status === 'PENDING' ? (
+                      <button className={styles.cancelBtn} onClick={() => setCancelId(a.id)}>
+                        Cancel Request
+                      </button>
+                    ) : null}
+                    {status === 'CONFIRMED' ? (
+                      <div className={styles.inlineActions}>
+                        <button
+                          className={styles.secondaryBtn}
+                          onClick={() => goToReschedule(a)}
+                        >
+                          Reschedule
+                        </button>
+                        <button
+                          className={styles.primaryGhostBtn}
+                          onClick={() => setDetailsAppt(a)}
+                        >
+                          View Details
+                        </button>
+                      </div>
+                    ) : null}
                   </div>
                 </div>
-              ))}
+              )})}
             </div>
           )}
         </section>
@@ -220,13 +339,10 @@ export default function DashboardPage() {
                   </div>
                   <div className={styles.apptInfo}>
                     <h3>{a.doctor.user.name}</h3>
-                    <p>{a.doctor.specialty} · {a.slot.startTime} – {a.slot.endTime}</p>
+                    <p>{displaySpecialty(a.doctor.specialty)} · {a.slot.startTime} – {a.slot.endTime}</p>
                   </div>
-                  <span
-                    className={styles.badge}
-                    style={{ background: STATUS_COLORS[a.status], color: STATUS_TEXT[a.status] }}
-                  >
-                    {a.status}
+                  <span className={`${styles.badge} ${BADGE_CLASS[a.status] || styles.badgeNeutral}`}>
+                    {STATUS_LABEL[a.status] || a.status}
                   </span>
                 </div>
               ))}
@@ -259,6 +375,54 @@ export default function DashboardPage() {
               <button className={styles.modalCancel} onClick={() => setCancelId(null)}>Keep it</button>
               <button className={styles.modalConfirm} onClick={() => cancelAppointment(cancelId)}>
                 Yes, cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {detailsAppt && (
+        <div className={styles.overlay}>
+          <div className={styles.modal}>
+            <h3>Appointment Details</h3>
+            <p style={{ marginBottom: 14 }}>Full consultation information</p>
+            <div className={styles.detailsGrid}>
+              <div className={styles.detailsRow}>
+                <span>Doctor</span>
+                <strong>{detailsAppt.doctor.user.name}</strong>
+              </div>
+              <div className={styles.detailsRow}>
+                <span>Specialty</span>
+                <strong>{displaySpecialty(detailsAppt.doctor.specialty)}</strong>
+              </div>
+              <div className={styles.detailsRow}>
+                <span>Reference ID</span>
+                <strong>{detailsAppt.tokenNumber || '—'}</strong>
+              </div>
+              <div className={styles.detailsRow}>
+                <span>Time</span>
+                <strong>
+                  {format(new Date(detailsAppt.slot.date + 'T00:00:00'), 'EEEE, MMM d yyyy')} ·{' '}
+                  {detailsAppt.slot.startTime} - {detailsAppt.slot.endTime}
+                </strong>
+              </div>
+              <div className={styles.detailsRow}>
+                <span>Hospital Location</span>
+                <strong>{detailsAppt.doctor.location}</strong>
+              </div>
+            </div>
+            <div className={styles.modalActions}>
+              <button className={styles.modalCancel} onClick={() => setDetailsAppt(null)}>
+                Close
+              </button>
+              <button
+                className={styles.modalConfirm}
+                onClick={() => {
+                  setDetailsAppt(null)
+                  goToReschedule(detailsAppt)
+                }}
+              >
+                Reschedule
               </button>
             </div>
           </div>

@@ -8,8 +8,8 @@
 .sidebar {
   width: 220px;
   min-height: 100vh;
-  background: #0f172a;
-  color: #e2e8f0;
+  background: #f8fafc;
+  color: #1e293b;
   padding: 24px 0;
   position: fixed;
   top: 0;
@@ -21,20 +21,20 @@
 
 .brand {
   padding: 0 20px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid #e2e8f0;
   margin-bottom: 12px;
 }
 
 .brandTitle {
   font-size: 13px;
   font-weight: 600;
-  color: #fff;
+  color: #0f172a;
   line-height: 1.35;
 }
 
 .brandSub {
   font-size: 11px;
-  color: #94a3b8;
+  color: #64748b;
   margin-top: 4px;
 }
 
@@ -42,20 +42,20 @@
   display: block;
   padding: 10px 20px;
   font-size: 14px;
-  color: #94a3b8;
+  color: #475569;
   text-decoration: none;
   transition: background 0.15s, color 0.15s;
 }
 
 .navLink:hover {
-  color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  color: #0f172a;
+  background: #e2e8f0;
 }
 
 .navLinkActive {
-  color: #fff;
-  background: rgba(20, 184, 166, 0.15);
-  border-right: 3px solid #14b8a6;
+  color: #1e3a8a;
+  background: #e0e7ff;
+  border-right: 3px solid #1d4ed8;
 }
 
 .main {
@@ -121,6 +121,7 @@
   border-collapse: collapse;
   font-size: 14px;
 }
+.tableCondensed { font-size: 12.5px; font-family: 'Inter', 'Arial Narrow', Arial, sans-serif; }
 
 .table th {
   text-align: left;
@@ -165,6 +166,10 @@
   background: #f3f4f6;
   color: #6b7280;
 }
+.statusRescheduled {
+  background: #ede9fe;
+  color: #6d28d9;
+}
 
 .actions {
   display: flex;
@@ -172,8 +177,8 @@
   gap: 8px;
 }
 
-.btnComplete {
-  background: #059669;
+.btnApprove {
+  background: #16a34a;
   color: #fff;
   border: none;
   padding: 6px 12px;
@@ -183,19 +188,19 @@
   font-weight: 500;
 }
 
-.btnComplete:hover {
-  background: #047857;
+.btnApprove:hover {
+  background: #15803d;
 }
 
-.btnComplete:disabled {
+.btnApprove:disabled {
   opacity: 0.45;
   cursor: not-allowed;
 }
 
-.btnCancel {
+.btnOutline {
   background: #fff;
-  color: #b91c1c;
-  border: 1px solid #fecaca;
+  color: #334155;
+  border: 1px solid #cbd5e1;
   padding: 6px 12px;
   border-radius: 8px;
   font-size: 13px;
@@ -203,13 +208,38 @@
   font-weight: 500;
 }
 
-.btnCancel:hover {
-  background: #fef2f2;
+.btnOutline:hover {
+  background: #f8fafc;
 }
 
-.btnCancel:disabled {
+.btnOutline:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+.filterRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.filterControl {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #0f172a;
+  background: #fff;
+}
+.noteInput {
+  width: 100%;
+  min-width: 180px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-size: 12px;
+  color: #0f172a;
 }
 
 .empty {

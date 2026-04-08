@@ -7,17 +7,23 @@ const prisma = new PrismaClient()
 
 const HOSPITAL = 'Udumula Hospital'
 
-/** OPD window: 10:00–14:00, 30-minute slots */
-const MORNING_SLOTS = [
-  { start: '10:00', end: '10:30' },
-  { start: '10:30', end: '11:00' },
-  { start: '11:00', end: '11:30' },
-  { start: '11:30', end: '12:00' },
-  { start: '12:00', end: '12:30' },
-  { start: '12:30', end: '13:00' },
-  { start: '13:00', end: '13:30' },
-  { start: '13:30', end: '14:00' },
-]
+/** OPD window: 09:00–16:30, 15-minute slots (exclude 13:00–14:00 lunch break) */
+const DAY_SLOTS = (() => {
+  const out: { start: string; end: string }[] = []
+  for (let mins = 9 * 60; mins <= 16 * 60 + 30; mins += 15) {
+    if (mins >= 13 * 60 && mins < 14 * 60) continue
+    const startH = Math.floor(mins / 60)
+    const startM = mins % 60
+    const endMins = mins + 15
+    const endH = Math.floor(endMins / 60)
+    const endM = endMins % 60
+    out.push({
+      start: `${String(startH).padStart(2, '0')}:${String(startM).padStart(2, '0')}`,
+      end: `${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}`,
+    })
+  }
+  return out
+})()
 
 async function main() {
   // Clear slots & doctor rows only — keeps PATIENT accounts (e.g. after Postgres migration)
@@ -55,11 +61,11 @@ async function main() {
 
   // Specialty strings must match doctors page filters exactly
   const doctorsData = [
-    // General Practice (2)
+    // General Physician (2)
     {
       name: 'Dr. Ananya Sharma',
       email: 'a.sharma.gp@udumulahospital.com',
-      specialty: 'General Practice',
+      specialty: 'General Physician',
       bio: 'Family physician for routine check-ups, chronic disease management, and referrals.',
       experience: 12,
       rating: 4.7,
@@ -69,7 +75,7 @@ async function main() {
     {
       name: 'Dr. Ravi Kulkarni',
       email: 'r.kulkarni.gp@udumulahospital.com',
-      specialty: 'General Practice',
+      specialty: 'General Physician',
       bio: 'Primary care doctor with focus on preventive health and adult medicine.',
       experience: 9,
       rating: 4.6,
@@ -207,22 +213,23 @@ async function main() {
       },
     })
 
+    const slotRows: { doctorId: string; date: string; startTime: string; endTime: string }[] = []
     for (let i = 1; i <= 7; i++) {
-      const date = format(addDays(new Date(), i), 'yyyy-MM-dd')
-      const dayOfWeek = addDays(new Date(), i).getDay()
+      const day = addDays(new Date(), i)
+      const date = format(day, 'yyyy-MM-dd')
+      const dayOfWeek = day.getDay()
       if (dayOfWeek === 0 || dayOfWeek === 6) continue
 
-      for (const t of MORNING_SLOTS) {
-        await prisma.timeSlot.create({
-          data: {
-            doctorId: doctor.id,
-            date,
-            startTime: t.start,
-            endTime: t.end,
-          },
+      for (const t of DAY_SLOTS) {
+        slotRows.push({
+          doctorId: doctor.id,
+          date,
+          startTime: t.start,
+          endTime: t.end,
         })
       }
     }
+    if (slotRows.length > 0) await prisma.timeSlot.createMany({ data: slotRows })
   }
 
   console.log(`✅ Seed complete — ${HOSPITAL}`)

@@ -16,14 +16,21 @@ type Doctor = {
   user: { name: string }
 }
 
-const SPECIALTIES = ['All', 'General Practice', 'Cardiology', 'Dermatology', 'Orthopedics', 'Pediatrics', 'Neurology']
+const SPECIALTIES = ['All', 'General Physician', 'Cardiology', 'Dermatology', 'Orthopedics', 'Pediatrics', 'Neurology']
+
+function normalizeSpecialtyParam(s: string | null) {
+  const t = (s || '').trim()
+  if (!t) return 'All'
+  if (t === 'General Practice') return 'General Physician'
+  return SPECIALTIES.includes(t) ? t : 'All'
+}
 
 export default function DoctorsPageClient() {
   const searchParams = useSearchParams()
   const [doctors, setDoctors] = useState<Doctor[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
-  const [specialty, setSpecialty] = useState(searchParams.get('specialty') || 'All')
+  const [specialty, setSpecialty] = useState(normalizeSpecialtyParam(searchParams.get('specialty')))
 
   useEffect(() => {
     fetchDoctors()
@@ -48,7 +55,6 @@ export default function DoctorsPageClient() {
         </Link>
         <div className={styles.navRight}>
           <Link href="/dashboard" className={styles.navLink}>Dashboard</Link>
-          <Link href="/book" className={styles.btnAI}>✨ AI Booking</Link>
         </div>
       </nav>
 
